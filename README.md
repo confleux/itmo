@@ -1,1 +1,1 @@
-Itmo hw and labs
+homework and labs
