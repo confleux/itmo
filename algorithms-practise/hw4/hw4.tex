@@ -1,0 +1,39 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[russian,english]{babel}
+\usepackage{fontspec}
+\usepackage{amsfonts}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{listings}
+\usepackage[left=2cm,right=2cm,bottom=2cm,top=2cm]{geometry}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\setmainfont{PT Serif}
+
+\title{ДЗ по алгоритмам № 4. Кривенко Андрей М3107}
+
+\begin{document}
+\maketitle
+\begin{enumerate}  
+  \item 10, так как нам достаточно просто спускаться от первой вершины дерева к нижнему уровню дерева, а уровней 10.
+  \item 3 * i + 1, 3 * i + 2, 3 * i + 3
+  \item Такой массив не существует, так как сортировка кучей гарантированно работает за $n \log n$ при любых вводных данных
+  \item \begin{enumerate}
+      \item Неотсортированный список: insert - 1, extractMin - n, decreaseKey - n, merge - 1
+      \item Отсортированный список: insert - n, extractMin - 1, decreaseKey - log n, merge - n + m
+      \item Двоичная куча: insert - $\log n$,  extractMin - $\log n$, decreaseKey - $\log n$, merge - $\log (n + m)$
+    \end{enumerate}
+  \item Можно привести контпример обратному утверждению. Если в дереве 3 вершины, а мы посчитаем поддеревья высоты 1, то должно получиться, что таких поддеревьев больше 1, однако на самом деле оно 1.
+  \item Представим бинарное дерево, такое, что все вершины на четном уровне меньше всех своих предшественников, а все вершины на нечетных уровнях больше всех своих предшественников.
+    Тогда наименьший элемент расположен в корневой вершине. Один из элементов на втором уровне является наибольшим.
+  \item $[2, 3, 4, 1, 5] \to  [2, 1, 4, 3, 5]$
+  \item n кратно 2 - n / 2; n не кратно 2 - (n / 2) + 1
+  \end{enumerate}
+\end{document}
