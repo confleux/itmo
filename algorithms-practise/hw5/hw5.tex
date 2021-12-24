@@ -1,0 +1,112 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[russian,english]{babel}
+\usepackage{fontspec}
+\usepackage{amsfonts}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{listings}
+
+\setmainfont{PT Serif}
+
+\title{ДЗ 5 по алгоритмам. Кривенко Андрей. М3107}
+
+\begin{document}
+\maketitle
+\begin{enumerate}
+  \item inorder traversal
+    \begin{lstlisting}[language=c++]
+    void printSorted(Node* x) {
+      if (x != nullptr) {
+        printSorted(x->left);
+        printf("%d ", x->key);
+        printSorted(x->right);
+      }
+    }
+  \end{lstlisting} 
+  \item Преобразую рекурсивное решение предыдущей задачи
+    \begin{lstlisting}[language=c++]
+    void printSorted(Node* x) {
+      Node* tmp = x;
+      while (true) {
+        //спускаемся максимально влево
+        while (tmp->left != nullptr) {
+          tmp = tmp->left;
+        }
+
+        printf("%d ", tmp->key);
+        
+        //теперь нужно найти элемент справа
+        if (tmp->right != nullptr) {
+          tmp = tmp->right;  
+        } else {
+          while (tmp->right != nullptr) {
+            tmp = tmp->parent;
+          }
+        }
+      }
+    }
+  \end{lstlisting} 
+  \item  postorder traversal - считаем сколько слева, затем считаем, сколько справа
+  \begin{lstlisting}[language=c++]
+    int w(Node* x) {
+      if (x != nullptr) {
+        int a = 0, b = 0;
+        if (x->left != nullptr) {
+          a = w(x->left);
+        }
+        if (x->right != nullptr) { 
+          b = w(x->right);
+        }
+        return a + b + 1;
+      }
+    }
+  \end{lstlisting}
+\item sample text
+  \begin{lstlisting}[language=c++]
+    int kth (Node* x, int k) {
+      Node* node = x;
+      while (node != nullptr) {
+        int a = 0, b = 0;
+        if (x->left != nullptr) {
+          a = w(x->left);
+        }
+        if (x->right != nullptr) { 
+          b = w(x->right);
+        }
+        if (k == a + 1) {
+          return node->key;
+        } else if (k < a) {
+          node = node->left;
+        } else {
+          node = node->right;
+          k -= b + 1;
+        }
+      }
+    }
+  \end{lstlisting}
+\item Найдем банальной операцией ноду с ключом x, результат - \[w(search(x).left)\]
+  Или: 
+  \begin{lstlisting}[language=c++]
+    int result = 0;
+    int func(Node* node, int x) {
+      if (node == nullptr) {
+        return;
+      }
+
+      if (node->value >= x) {
+        func(node->left, x);
+      } else {
+        result += w(node);
+        func(node->right, x);
+      }
+    }
+  \end{lstlisting}
+\item $[8, 3, 4]$ ?? если правильно понял данное условие 
+  \item Да. Доказывается так же, как и высота АВЛ дерева. 
+\end{enumerate}
+\end{document}

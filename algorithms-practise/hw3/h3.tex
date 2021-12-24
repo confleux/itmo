@@ -1,0 +1,173 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[russian,english]{babel}
+\usepackage{fontspec}
+\usepackage{amsfonts}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{listings}
+\usepackage[left=2cm,right=2cm,bottom=2cm,top=2cm]{geometry}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\setmainfont{PT Serif}
+
+\title{ДЗ по алгоритмам № 3. Кривенко Андрей М3107}
+
+\begin{document}
+\maketitle
+\begin{enumerate}  
+  \item \begin{lstlisting}[language=c++]
+    int binSearchModified (int* arr, int l, int r, int x) {
+      int mid = (l + r) / 2;
+    
+      if (l == r) {
+        return mid;
+      }
+    
+      if (arr[mid] == x) {
+        return mid + 1;
+      } else if (arr[mid] < x) {
+        return binSearchModified(arr, mid + 1, r, x);
+      } else {
+        return binSearchModified(arr, l, mid, x);
+      }
+    }
+    
+    int algo (int* arr, int n, int x) {
+      int* tmp = new int[n];
+      tmp[0] = arr[0];
+      for (int i = 1; i < n; ++i) {
+        tmp[i] = tmp[i - 1] + arr[i];
+      }
+    
+      return binSearchModified(tmp, 0, n, x);
+    }
+    \end{lstlisting}
+  \item Требуется найти разделяющий два массива элемент такой, что $a_{i - 1} < a_{i} \wedge  a_{i + 1} < a_{i}$. 
+  После выполняем сортировку в 2 двух массивах по разным правилам: для возрастания и для убывания.
+  
+  \begin{lstlisting}[language=c++]
+    int findSeparator (int* arr, int l, int r) {
+      int mid = (l + r) / 2;
+      if (l >= r) {
+        return -1;
+      }
+
+      if (arr[mid - 1] < arr[mid] && arr[mid + 1] < arr[mid]){
+        return mid;
+      }
+
+      if (arr[mid - 1]  < arr[mid]) {
+        return findSeparator(arr, mid, r);
+      } else {
+        return findSeparator(arr, l, mid);
+      }
+    }
+
+    int algo (int* arr, int n, int x) {
+      int sep = findSeparator(arr, 0, n);
+
+      if (x == arr[sep]) {
+        return sep;
+      }
+
+      if (x <= arr[sep - 1]) {
+      int l = 0, r = sep;
+      int mid = (l + r) / 2;
+      while (l < r - 1) {
+        mid = (l + r) / 2;
+        if (arr[mid] == x) {
+          return mid;
+        } else if (arr[mid] < x) {
+          l = mid;
+        } else {
+          r = mid;
+        }
+      }
+      }
+
+      if (x <= arr[sep + 1]) {
+        int l = sep, r = n;
+        int mid = (l + r) / 2;
+        while (l < r - 1) {
+          mid = (l + r) / 2;
+          if (arr[mid] == x) {
+            return mid;
+          } else if (arr[mid] > x) {
+            l = mid;
+          } else {
+            r = mid;
+          }
+        }
+      }
+      return -1;
+    }
+  \end{lstlisting}
+  \item Нет, так как при циклическом сдвиге последнее число, т.е. наибольшее в массиве, станет первым и массив будет таким, что:
+  на первой позиции наибольший элемент, а далее элементы расположены по возрастанию $\Longrightarrow$ нельзя применить бинарный поиск
+  \item Можно записывать в стек структуру с элементами: число, сумма чисел предыдущих элементов. Тогда для того, чтобы получить сумму чисел в стеке, необходмо будет вернуть сумму чисел из последнего элемента стэка.
+  \item Проще написать псевдокод, чем реализацию на c++ из-за ньюансов.
+    Для решения задачи 5 мы можем сначала перевести выражение из инфиксной нотации в постфиксную, и считать выражение уже в ней.
+    Таким образом, решается сразу же и шестая задача. \\
+    Алгоритм перевода из инфиксной нотации в постфиксную, на вход которого подается выражение (токеном назовем любой char из выражения): \\
+    Предварительно создаем массив вывода и стэк операторов.
+
+    \begin{algorithmic}
+      \While{$Can \; read \; token$}
+        \State $Read \; token \; A$
+        \If{$A \; is \; number$}
+          \State $Push \; A \; to \; output \; array$
+        \EndIf 
+        \If{$A \; is \; operator \; o_{1}$}
+          \While{$There \; is \; operator \; o_{2} \; on \; top \; of \; operator \; stack \; \land o_{2} \; has \; greater \; precedence \; than \; o_{1}$}
+            \State $Pop \; o_{2} \; from \; operator \; stack \; and \; put \; to \; output \; array$
+          \EndWhile{}
+          \State  $Push \; o_{1} \; to \; operator \; stack$
+        \EndIf
+        \If{$A \; is \; '('$}
+          \State  $Push \; o_{1} \; to \; operator \; stack$
+        \EndIf
+        \If{$A \; is \; ')'$}
+          \While{$Operator \; op_{1} \; at \; top \; of \; operator \; stack \; is \; not \; '('$}
+            \State $Pop \; operator \; from \; operator \; stack \; to \; output \; array$
+            \State $Pop \; '(' \; from \; operator \; stack $
+          \EndWhile
+          \While{$There \; are \; tokens \; on \; operator \; stack$}
+            \State $Pop \; operator \; from  \; operator \; stack \; to \; output array$
+          \EndWhile
+        \EndIf
+      \EndWhile{}
+    \end{algorithmic}
+    Алгоритм подсчета выражения в постфиксной нотации:
+    \begin{algorithmic}
+      \While{$Can \; read \; token \; from \; output \; array$}
+        \State $Read \; token \; A$
+        \If{$A \; is \; operand$}
+          \State $Push \; A \; to \; stack$
+        \EndIf
+        \If{$A \; is \; operator$}
+          \State $Pop \; stack \; and \; get \; X_{1}$
+          \State $Pop \; stack \; and \; get \; X_{2}$
+          \State $Count \; X = X_{1} \; A \; X_{2}, \; where \; A \; is \; operator$
+          \State $Push \; X \; to \; stack $
+        \EndIf
+      \EndWhile
+      \State //Remaining element of stack is final value
+    \end{algorithmic}
+    \item Решено в предыдущей задаче
+    \item Для того, чтобы развернуть односвязный список, требуется в каждом эл-те списка указатель на следующий элемент заменить на указатель на предыдущий элемент.
+    \item Пусть за одну итерацию первый указатель на ноду переходит к следующей ноде, а второй указатель не две ноды вперед. Тогда, если эти два указателя встретятся, то список имеет кольцевой цикл.
+    \item Можем использовать алгоритм из предыдущей задачи. В списке будет должно быть два цикла в двух разных направлениях.
+    \item Сравниваем первые элементы двух отсортированных связных списков. 
+      Найти наименьшую голову среду первых эл-тов.
+      Все же прочие эл-ты списков будут больше этой голову.
+      Теперь запустим рекурсивную функцию, приминающую как параметры следующую ноду наименьшей головы и другую голову и возвращающую следующий наименьший эл-т связного списка.
+      Таким образом: currentelement.next = recursivefunc()
+\end{enumerate}
+\end{document}
